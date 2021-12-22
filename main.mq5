@@ -5,7 +5,8 @@
 
 #include <tradingStrategyFunctions.mqh>
 
-datetime timeday=0;
+static datetime timeday = 0;
+
 
 void OnInit()
 {
@@ -13,23 +14,31 @@ void OnInit()
 }
 void OnTick()
 {
+    //thinking set variable check again to true at beginning and then false in if statement that places trade also set to true on isNewDay()
+
+
     // Scheduled Improvements:
     //- Use actual pip value for stopLossInPips
     //- Partialling functionality
-
+    //- Different lotsizing for different trend strengths
+    //- Account security by downsizing or upsizing based on win/ lose streak
+    //- forget trade if spread is greater than 10 pips/ need a way to set trades to check again later
 
     //change ordersTotal to appropriate variable
     if(timeday!=iTime(NULL,PERIOD_D1,0))
     {
-        if(isTradingDay())
+        checkAgain = true;
+        timeday=iTime(NULL,PERIOD_D1,0);
+    }
+
+    if(isTradingDay() && checkAgain)
         {
             if((OrdersTotal() + PositionsTotal()) < 10)
             {
                 trade();
             }
         }
-        timeday=iTime(NULL,PERIOD_D1,0);
-    }
+        
 
 
     if(PositionsTotal())
