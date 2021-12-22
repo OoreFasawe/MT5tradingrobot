@@ -84,7 +84,7 @@ void trade()
     {
         lotSize = calculateLotSize(calculatePipDifference(fibPriceForSells, maxHeight));
         spread = calculatePipDifference(SymbolInfoDouble(NULL, SYMBOL_BID), SymbolInfoDouble(NULL, SYMBOL_ASK) /*_SPREAD*/) ;
-        if(lotSize >= 0.01 && spread < 100)
+        if(lotSize >= 0.01 && spread < 50)
         {
             trade.SellLimit(calculateLotSize(calculatePipDifference(fibPriceForSells, maxHeight)), fibPriceForSells, NULL, maxHeight, lastDailyCandleLow, ORDER_TIME_DAY, 0, NULL);
             checkAgain = false;
@@ -94,7 +94,7 @@ void trade()
     {
         lotSize = calculateLotSize(calculatePipDifference(fibPriceForBuys, minHeight));
         spread = calculatePipDifference(SymbolInfoDouble(NULL, SYMBOL_BID), SymbolInfoDouble(NULL, SYMBOL_ASK) /*_SPREAD*/) ;
-        if(lotSize >= 0.01 && spread < 100)
+        if(lotSize >= 0.01 && spread < 50)
             {
             trade.BuyLimit(calculateLotSize(calculatePipDifference(fibPriceForBuys, minHeight)), fibPriceForBuys, NULL, minHeight, lastDailyCandleHigh, ORDER_TIME_DAY, 0, NULL);
             checkAgain = false;
