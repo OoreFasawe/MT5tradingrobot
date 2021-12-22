@@ -1,0 +1,53 @@
+   FOR RISKMANAGEMENT FUNCTIONS
+
+   Alert(calculatePriceDifference(1.05480, 1.05780)); // 0.002
+   Alert(calculatePipDifference(1.05480, 1.05780)); // 200
+   Alert(calculateLotSize(calculatePipDifference(1.05480, 1.05780))); // 0.5 LOTS
+   Alert(fibRetracePrice(1.05480, 1.05680, 0.5));
+   
+
+   FOR TRADING STRATEGY FUNCTIONS
+
+   if(peaksInMatchingOrder(trendCandles))
+      Alert("Highs and Lows are in Sync");
+   else
+      Alert("No sync");
+
+   Alert(trendClassifier(trendCandles));
+   Alert(lastDailyCandleLow);
+   Alert(lastDailyCandleHigh);
+
+
+   Alert("");
+   if(trendBreak("TO DOWNSIDE"))
+     {
+      Alert("Market broke to the downside");
+      Alert("MAX HEIGHT");
+      Alert(maxHeight);
+      Alert("0.786 RETRACEMENT LEVEL");
+      Alert(fibPriceForSells);
+     }
+   if(trendBreak("TO UPSIDE"))
+     {
+      Alert("Market broke to the upside");
+      Alert("MIN HEIGHT");
+      Alert(minHeight);
+      Alert("0.786 RETRACEMENT LEVEL");
+      Alert(fibPriceForBuys);
+     }
+   Alert("");
+   
+   
+   FOR SELL LIMIT
+
+   trade.SellLimit(
+      0.10, //lot size
+      SymbolInfoDouble(NULL, SYMBOL_ASK) + (200 * _Point), //order price
+      NULL, //symbol
+      0, //stoploss
+      SymbolInfoDouble(NULL, SYMBOL_ASK) - (200 * _Point) , //take profit
+      ORDER_TIME_DAY, // till end of current day
+      0,
+      NULL
+   );
+   
