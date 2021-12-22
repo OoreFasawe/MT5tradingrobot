@@ -22,7 +22,6 @@ void OnTick()
     //- Partialling functionality
     //- Different lotsizing for different trend strengths
     //- Account security by downsizing or upsizing based on win/ lose streak
-    //- forget trade if spread is greater than 10 pips/ need a way to set trades to check again later
 
     //change ordersTotal to appropriate variable
     if(timeday!=iTime(NULL,PERIOD_D1,0))
