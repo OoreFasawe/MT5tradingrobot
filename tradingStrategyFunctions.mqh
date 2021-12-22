@@ -81,13 +81,13 @@ void trade()
     else if (trendClassifier(trendCandles) % 2 == 0 && trendBreak("TO DOWNSIDE")) // uptrend
     {
         lotSize = calculateLotSize(calculatePipDifference(fibPriceForSells, maxHeight));
-        if(lotSize > 0)
+        if(lotSize >= 0.01)
             trade.SellLimit(calculateLotSize(calculatePipDifference(fibPriceForSells, maxHeight)), fibPriceForSells, NULL, maxHeight, lastDailyCandleLow, ORDER_TIME_DAY, 0, NULL);
     }
     else if(trendClassifier(trendCandles) % 2 != 0 && trendBreak("TO UPSIDE")) // downtrend
     {
         lotSize = calculateLotSize(calculatePipDifference(fibPriceForBuys, minHeight));
-        if(lotSize > 0)
+        if(lotSize >= 0.01)
             trade.BuyLimit(calculateLotSize(calculatePipDifference(fibPriceForBuys, minHeight)), fibPriceForBuys, NULL, minHeight, lastDailyCandleHigh, ORDER_TIME_DAY, 0, NULL);
     }
 }
