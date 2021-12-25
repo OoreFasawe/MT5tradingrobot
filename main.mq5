@@ -17,8 +17,9 @@ void OnTick()
     //thinking set variable check again to true at beginning and then false in if statement that places trade also set to true on isNewDay()
 
 
+
     // Scheduled Improvements:
-    //- Use actual pip value for stopLossInPips
+    //- Make sure all the candle lows or highs after the breakout stay above the 0.786 area- call it proper break
     //- Partialling functionality
     //- Different lotsizing for different trend strengths
     //- Account security by downsizing or upsizing based on win/ lose streak
@@ -32,7 +33,7 @@ void OnTick()
 
     if(isTradingDay() && checkAgain)
         {
-            if((OrdersTotal() + PositionsTotal()) < 10)
+            if(OrdersTotal() < 10)
             {
                 trade();
             }
@@ -40,7 +41,7 @@ void OnTick()
         
 
 
-    if(PositionsTotal())
+    if(OrdersTotal())
     {  
         //checkForPartials();
 

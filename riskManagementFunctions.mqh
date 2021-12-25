@@ -18,11 +18,11 @@ double calculatePipDifference(double p1, double p2)
    return NormalizeDouble(pipDifference, 0);
   }
 
-double calculateLotSize(double stopLossInPips)
+double calculateLotSize(double stopLossInPips) //currency with lower pip value should have a higher overall > 1 tick value and lower than eu/gu lotsize
 {
     double maxMonetaryRisk = BALANCE * PERCENTAGE_RISK_PER_TRADE;
-    double lotSizeVolume = maxMonetaryRisk / (stopLossInPips + calculatePipDifference(SymbolInfoDouble(NULL, SYMBOL_BID), SymbolInfoDouble(NULL, SYMBOL_ASK) /*_SPREAD*/)) ;
-
+    double lotSizeVolume = maxMonetaryRisk / ((stopLossInPips + calculatePipDifference(SymbolInfoDouble(NULL, SYMBOL_BID), SymbolInfoDouble(NULL, SYMBOL_ASK) /*_SPREAD*/)) * SymbolInfoDouble(NULL, SYMBOL_TRADE_TICK_VALUE)) ;
+    
     return NormalizeDouble(lotSizeVolume, 2);
 }
 
