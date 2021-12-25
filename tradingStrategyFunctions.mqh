@@ -69,10 +69,50 @@ int trendClassifier(MqlRates& array[])
 bool trendBreak(string trendBreakType)
 {
     if(trendBreakType ==  "TO DOWNSIDE")
-        return (lastDailyCandleLow <= trendCandles[1].low && SymbolInfoDouble(NULL, SYMBOL_BID) < fibPriceForSells /*0.786 area of chart*/);
+        return (lastDailyCandleLow <= trendCandles[1].low && properBreak(trendBreakType));
     else if (trendBreakType == "TO UPSIDE")
-        return (lastDailyCandleHigh >= trendCandles[1].high && SymbolInfoDouble(NULL, SYMBOL_ASK) > fibPriceForBuys /*0.786 area of char */);
+        return (lastDailyCandleHigh >= trendCandles[1].high && properBreak(trendBreakType));
     else
+        return false;
+}
+
+//where prrice doesn't go back to the 
+bool properBreak(string trendBreakType)
+{
+    MqlRates breakoutCandles[];
+    int upBreakoutCandle = 0;
+    int downBreakoutCandle = 0;
+
+    //candles from now till opening of last day
+    int candlesTillLastDay = CopyRates(NULL, PERIOD_H1, iTime(NULL, PERIOD_H1, 0), iTime(NULL, PERIOD_D1, 1), breakoutCandles);
+    //candles number of max and min candle 
+    for( int i = 1; i < candlesTillLastDay; i ++)
+    {
+        if(breakoutCandles[i].high == lastDailyCandleHigh)
+            upBreakoutCandle = i;
+        if(breakoutCandles[i].low == lastDailyCandleLow)
+            downBreakoutCandle = i;
+    }
+
+    if(trendBreakType == "TO DOWNSIDE")
+    {
+        for(int i = downBreakoutCandle; i < candlesTillLastDay; i++)
+        {
+            if(breakoutCandles[i].high > fibPriceForSells)
+                return false;
+        }
+        return true; 
+    }
+    else if(trendBreakType == "TO UPSIDE")
+    {
+        for(int i = upBreakoutCandle; i < candlesTillLastDay; i++)
+        {
+            if(breakoutCandles[i].low < fibPriceForBuys)
+                return false;
+        }
+            return true;
+    }
+    else 
         return false;
 }
 

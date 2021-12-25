@@ -41,13 +41,57 @@
    FOR SELL LIMIT
 
    trade.SellLimit(
-      0.10, //lot size
+      calculateLotSize(200), //lot size
       SymbolInfoDouble(NULL, SYMBOL_ASK) + (200 * _Point), //order price
       NULL, //symbol
-      0, //stoploss
+      SymbolInfoDouble(NULL, SYMBOL_ASK) + (400 * _Point), //stoploss
       SymbolInfoDouble(NULL, SYMBOL_ASK) - (200 * _Point) , //take profit
       ORDER_TIME_DAY, // till end of current day
       0,
       NULL
    );
    
+
+      /*
+    MqlRates breakoutCandles[];
+    int upBreakoutCandle = 0;
+    int downBreakoutCandle = 0;
+
+   //candles from now till opening of last day
+    int candlesTillLastDay = CopyRates(NULL, PERIOD_H1, iTime(NULL, PERIOD_H1, 0), iTime(NULL, PERIOD_D1, 1), breakoutCandles);
+   //candles number of max and min candle
+    for(int i = 1; i < candlesTillLastDay; i ++)
+      {
+       if(breakoutCandles[i].high == lastDailyCandleHigh)
+          upBreakoutCandle = i;
+       if(breakoutCandles[i].low == lastDailyCandleLow)
+          downBreakoutCandle = i;
+      }
+    //Alert(candlesTillLastDay);
+    Alert(upBreakoutCandle);
+    Alert(downBreakoutCandle);
+    Alert(breakoutCandles[upBreakoutCandle].high);
+    Alert(lastDailyCandleHigh);
+    Alert(breakoutCandles[downBreakoutCandle].low);
+    Alert(lastDailyCandleLow);
+    */
+
+
+   /*
+   Alert("Trend broke to the upside the day before");
+   Alert(lastDailyCandleHigh >= trendCandles[1].high);
+   Alert("Price never went down to the 78.6 area after the break even in the current day");
+   Alert(properBreak("TO UPSIDE"));
+
+   Alert("Trend broke to the downside the day before");
+   Alert(lastDailyCandleLow <= trendCandles[1].low);
+   Alert("Price never went up to the 78.6 area after the break even in the current day");
+   Alert(properBreak("TO DOWNSIDE"));
+   */
+
+   /*
+   Alert("Trend broke properly to the downside the day before(without overretracing, forget the trend established by other candles");
+   Alert(trendBreak("TO DOWNSIDE"));
+   Alert("Trend broke properly to the upside the day before(without overretracing, forget the trend established by other candles");
+   Alert(trendBreak("TO UPSIDE"));
+   */
