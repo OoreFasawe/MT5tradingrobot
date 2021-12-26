@@ -15,14 +15,19 @@ void OnInit()
 void OnTick()
 {
     //thinking set variable check again to true at beginning and then false in if statement that places trade also set to true on isNewDay()
-
-
+    // Fixed:
+    //- using actual pip value now
+    //- Made sure all the candle lows or highs after the highest breakout stay above the 0.786 area- call it proper break
 
     // Scheduled Improvements:
-    //- Make sure all the candle lows or highs after the breakout stay above the 0.786 area- call it proper break
-    //- Partialling functionality
+    //*Important and Urgent
+    
+    //*Important but not urgent
+    //- Partialling functionality- change ultimate tp to 6.54R, partial tp to 3.67R and 4.92R, if trade completed successful, should net 4.5R
+    //*Not important but urgent
+    //*Not important nor urgent
     //- Different lotsizing for different trend strengths
-    //- Account security by downsizing or upsizing based on win/ lose streak
+    //- Account security by downsizing or upsizing based on win/lose streak
 
     //change ordersTotal to appropriate variable
     if(timeday!=iTime(NULL,PERIOD_D1,0))
