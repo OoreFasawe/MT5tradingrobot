@@ -13,7 +13,7 @@ void OnInit()
 }
 void OnTick()
 {
-    //thinking set variable check again to true at beginning and then false in if statement that places trade also set to true on isNewDay()
+
     // Fixed:
     //- using actual pip value now
     //- Made sure all the candle lows or highs after the highest breakout stay above the 0.786 area- call it proper break
@@ -21,15 +21,16 @@ void OnTick()
 
     // Scheduled Improvements:
     //*Important and Urgent
-    
+    //
     //*Important but not urgent
-    //- Send messages to phone mt4 when pairs are beign looked at, limits are set, orders are opened, partials are taken and orders are closed
+    //
     //*Not important but urgent
+    //
     //*Not important nor urgent
+    //- Send messages to phone mt4 when pairs are beign looked at, limits are set, orders are opened, partials are taken and orders are closed
     //- Different lotsizing for different trend strengths
     //- Account security by downsizing or upsizing based on win/lose streak
 
-    //change ordersTotal to appropriate variable
     if(timeday!=iTime(NULL,PERIOD_D1,0))
     {
         checkAgain = true;
