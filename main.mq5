@@ -7,7 +7,6 @@
 
 static datetime timeday = 0;
 
-
 void OnInit()
 {
     //Alert(AccountBalance());
@@ -18,12 +17,13 @@ void OnTick()
     // Fixed:
     //- using actual pip value now
     //- Made sure all the candle lows or highs after the highest breakout stay above the 0.786 area- call it proper break
+        //- Partialling functionality- change ultimate tp to 4.92, and partial tp to 3.67R(previous high or low), if trade completed successful, should net 4.3RR
 
     // Scheduled Improvements:
     //*Important and Urgent
     
     //*Important but not urgent
-    //- Partialling functionality- change ultimate tp to 6.54R, partial tp to 3.67R and 4.92R, if trade completed successful, should net 4.5R
+    //- Send messages to phone mt4 when pairs are beign looked at, limits are set, orders are opened, partials are taken and orders are closed
     //*Not important but urgent
     //*Not important nor urgent
     //- Different lotsizing for different trend strengths
@@ -37,27 +37,14 @@ void OnTick()
     }
 
     if(isTradingDay() && checkAgain)
+    {
+        if(OrdersTotal() + PositionsTotal() < 10)
         {
-            if(OrdersTotal() < 10)
-            {
-                trade();
-            }
+            trade();
         }
-        
-
-
-    if(OrdersTotal())
-    {  
-        //checkForPartials();
-
-
-        //go through each order in orderstotal 
-        //if trade is running
-        //check if partials need to be taken or sl modified
-        //check if full tp needs to be taken
-        //do nothing if nothing needs to be done
     }
-    
+        
+    checkForPartials();
 }
 
 void OnDeInit()

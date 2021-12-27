@@ -17,6 +17,7 @@ double lotSize;
 double spread;
 static bool checkAgain = true;
 
+
 //checking if highs follo lows and vice versa
 bool peaksInMatchingOrder(MqlRates &array[]) 
 {
@@ -126,7 +127,7 @@ void trade()
         spread = calculatePipDifference(SymbolInfoDouble(NULL, SYMBOL_BID), SymbolInfoDouble(NULL, SYMBOL_ASK) /*_SPREAD*/) ;
         if(lotSize >= 0.01 && spread < 50)
         {
-            trade.SellLimit(calculateLotSize(calculatePipDifference(fibPriceForSells, maxHeight)), fibPriceForSells, NULL, maxHeight, lastDailyCandleLow, ORDER_TIME_DAY, 0, NULL);
+            trade.SellLimit(calculateLotSize(calculatePipDifference(fibPriceForSells, maxHeight)), fibPriceForSells, NULL, maxHeight, fibRetracePrice(maxHeight, lastDailyCandleLow, -0.27), ORDER_TIME_DAY, 0, NULL);
             checkAgain = false;
         }
     }
@@ -136,15 +137,85 @@ void trade()
         spread = calculatePipDifference(SymbolInfoDouble(NULL, SYMBOL_BID), SymbolInfoDouble(NULL, SYMBOL_ASK) /*_SPREAD*/) ;
         if(lotSize >= 0.01 && spread < 50)
             {
-            trade.BuyLimit(calculateLotSize(calculatePipDifference(fibPriceForBuys, minHeight)), fibPriceForBuys, NULL, minHeight, lastDailyCandleHigh, ORDER_TIME_DAY, 0, NULL);
+            trade.BuyLimit(calculateLotSize(calculatePipDifference(fibPriceForBuys, minHeight)), fibPriceForBuys, NULL, minHeight, fibRetracePrice(minHeight, lastDailyCandleHigh, -0.27), ORDER_TIME_DAY, 0, NULL);
             checkAgain = false;
             }
+    }
+}
+
+void checkForPartials()
+{
+    if(PositionsTotal())
+    {  
+        for(int i = 0; i < PositionsTotal(); i++)
+        {
+            ulong posTicket = PositionGetTicket(i);
+
+            if(PositionSelectByTicket(posTicket))
+            {
+                double posOpenPrice = PositionGetDouble(POSITION_PRICE_OPEN);
+                double posSl = PositionGetDouble(POSITION_SL);
+                double posCurrentPrice = PositionGetDouble(POSITION_PRICE_CURRENT);
+                double posTp = PositionGetDouble(POSITION_TP);
+                ENUM_POSITION_TYPE posType = (ENUM_POSITION_TYPE)PositionGetInteger(POSITION_TYPE);
+                double posLots = PositionGetDouble(POSITION_VOLUME);
+
+                if(posType == POSITION_TYPE_BUY && posSl != posOpenPrice)
+                {
+                    if(posCurrentPrice >= fibRetracePrice(posSl, posOpenPrice, -3.67))
+                    {
+                        trade.PositionClosePartial(posTicket, NormalizeDouble(posLots / 2, 2));
+                        trade.PositionModify(posTicket, posOpenPrice, posTp);
+                    }
+                            //modify order by closing half and moving sl to openPrice, set partialled to false
+                }
+                else if(posType == POSITION_TYPE_SELL && posSl != posOpenPrice)
+                {
+                    if(posCurrentPrice <= fibRetracePrice(posSl, posOpenPrice, -3.67))
+                    {
+                        trade.PositionClosePartial(posTicket, NormalizeDouble(posLots / 2, 2));
+                        trade.PositionModify(posTicket, posOpenPrice, posTp);
+                    }
+                }
+            }
+
+        }
     }
 }
 
 
 
 
+
+
+//Extra functions that may be helpful for optimization in the future
+
+//better implementation of peaksInMatchingOrder, more reusable.
+bool highBeforeLow(int daysBeforeCurrent)
+{
+    MqlRates dayH1Candles;
+
+    candleLength = CopyRates(NULL, PERIOD_H1,daysBeforeCurrent, 1, dayH1Candles);
+
+    int dayHigh
+    int dayLow;
+
+    for(int i = 0; i < candleLength; i++)
+    {
+        if(dayH1Candles(i).high == iHigh(NULL, PERIOD_D1, daysBeforeCurrent))
+            dayHigh = i;
+        if(dayH1Candles(i).low == iLow(NULL, PERIOD_D1, daysBeforeCurrent))
+            dayLow = i;
+    }
+
+    return (dayHigh < dayLow);
+}
+
+bool lowbeforeHigh(int daysBeforeCurrent)
+{
+
+    return (!highBeforeLow(daysBeforeCurrent));
+}
 
 
 

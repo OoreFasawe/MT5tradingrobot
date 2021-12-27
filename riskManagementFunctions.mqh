@@ -22,7 +22,7 @@ double calculateLotSize(double stopLossInPips) //currency with lower pip value s
 {
     double maxMonetaryRisk = BALANCE * PERCENTAGE_RISK_PER_TRADE;
     double lotSizeVolume = maxMonetaryRisk / ((stopLossInPips + calculatePipDifference(SymbolInfoDouble(NULL, SYMBOL_BID), SymbolInfoDouble(NULL, SYMBOL_ASK) /*_SPREAD*/)) * SymbolInfoDouble(NULL, SYMBOL_TRADE_TICK_VALUE)) ;
-    
+
     return NormalizeDouble(lotSizeVolume, 2);
 }
 
@@ -34,6 +34,10 @@ double fibRetracePrice(double p1, double p2, double retracePercent)
     return priceAftRetrace;
 }
 
+void checkForPartials()
+{
+  
+}
 //to work on in future for security reasons to downsize and upsize apropriately
 bool BadStreak()
 {
