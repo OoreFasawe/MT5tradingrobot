@@ -17,7 +17,7 @@ void OnTick()
     // Fixed:
     //- using actual pip value now
     //- Made sure all the candle lows or highs after the highest breakout stay above the 0.786 area- call it proper break
-        //- Partialling functionality- change ultimate tp to 4.92, and partial tp to 3.67R(previous high or low), if trade completed successful, should net 4.3RR
+    //- Added partialling functionality- change ultimate tp to 4.92, and partial tp to 3.67R(previous high or low), if trade completed successful, should net 4.3RR
 
     // Scheduled Improvements:
     //*Important and Urgent
