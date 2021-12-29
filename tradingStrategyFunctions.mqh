@@ -111,7 +111,7 @@ bool properBreak(string trendBreakType)
             if(breakoutCandles[i].low < fibPriceForBuys)
                 return false;
         }
-            return true;
+        return true;
     }
     else 
         return false;
