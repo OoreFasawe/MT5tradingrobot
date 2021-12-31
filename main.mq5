@@ -8,10 +8,6 @@
 static datetime timeday = 0;
 static bool checkAgain = true;
 
-void OnInit()
-{
-    //Alert(AccountBalance());
-}
 void OnTick()
 {
 
@@ -34,9 +30,9 @@ void OnTick()
     //- Account security by downsizing or upsizing based on win/lose streak
 
 
-//note: we want it to reset at the start of the trader server day and not our time, EA was using wrong time settings for the timeday function. Although
+//Notes to self
+//We want it to reset at the start of the trader server day and not our time, EA was using wrong time settings for the timeday function. Although
 // timelocal works just fine for other parts of the code, perhaps they ofset it automatically when used as paramters but not by themselves.
-
 //Just remember to change offset when travelling across cities/states or figure out how to get an offset so you don't need to change
     if(timeday!=iTime(NULL,PERIOD_D1,0) + 36000)
     {
@@ -55,12 +51,3 @@ void OnTick()
     checkForPartials();
 }
 
-void OnDeInit()
-{
-    //Alert(AccountBalance());
-}
-
-//remember concept of max and min lotsize regardless of calculated lot
-//No trade with more than a ** pip stop
-//variable should be in main like this: if orderstotal() < maxtrradesatonce, trade, else, don't trade
-//Day of week is important too
