@@ -18,6 +18,7 @@ void OnTick()
     //- using actual pip value now
     //- Made sure all the candle lows or highs after the highest breakout stay above the 0.786 area- call it proper break
     //- Added partialling functionality- change ultimate tp to 4.92, and partial tp to 3.67R(previous high or low), if trade completed successful, should net 4.3RR
+    //- Send messages to phone mt4 when pairs are being looked at, limits are set, orders are opened, partials are taken and orders are closed. Enable push notifications and Use SendNotification().
 
     // Scheduled Improvements:
     //*Important and Urgent
@@ -27,7 +28,6 @@ void OnTick()
     //*Not important but urgent
     //
     //*Not important nor urgent
-    //- Send messages to phone mt4 when pairs are beign looked at, limits are set, orders are opened, partials are taken and orders are closed
     //- Different lotsizing for different trend strengths
     //- Account security by downsizing or upsizing based on win/lose streak
 

@@ -130,16 +130,24 @@ void trade()
             trade.SellLimit(calculateLotSize(calculatePipDifference(fibPriceForSells, maxHeight)), fibPriceForSells, NULL, maxHeight, fibRetracePrice(maxHeight, lastDailyCandleLow, -0.27), ORDER_TIME_DAY, 0, NULL);
             checkAgain = false;
         }
+        else
+        {
+            SendNotification("Trade found on pair " + _Symbol + ". Spread(" + string(spread) + ") is too high or lotsize(" + string(lotSize) +") is to low at the moment");
+        }
     }
     else if(trendClassifier(trendCandles) % 2 != 0 && trendBreak("TO UPSIDE")) // downtrend
     {
         lotSize = calculateLotSize(calculatePipDifference(fibPriceForBuys, minHeight));
         spread = calculatePipDifference(SymbolInfoDouble(NULL, SYMBOL_BID), SymbolInfoDouble(NULL, SYMBOL_ASK) /*_SPREAD*/) ;
         if(lotSize >= 0.01 && spread < 50)
-            {
+        {
             trade.BuyLimit(calculateLotSize(calculatePipDifference(fibPriceForBuys, minHeight)), fibPriceForBuys, NULL, minHeight, fibRetracePrice(minHeight, lastDailyCandleHigh, -0.27), ORDER_TIME_DAY, 0, NULL);
             checkAgain = false;
-            }
+        }
+        else
+        {
+            SendNotification("Trade found on pair " + _Symbol + ". Spread(" + string(spread) + ") is too high or lotsize(" + string(lotSize) +") is to low at the moment");
+        }
     }
 }
 
