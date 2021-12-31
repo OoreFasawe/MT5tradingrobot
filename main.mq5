@@ -10,10 +10,10 @@ static bool checkAgain = true;
 
 void OnTick()
 {
-    if(timeday!=iTime(NULL,PERIOD_D1,0) + 36000)
+    if(timeday!=iTime(NULL,PERIOD_D1,0) + 21600)
     {
         checkAgain = true;
-        timeday=iTime(NULL,PERIOD_D1,0) + 36000;
+        timeday=iTime(NULL,PERIOD_D1,0) + 21600;
     }
 
     if(isTradingDay() && checkAgain)
