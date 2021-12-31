@@ -33,11 +33,6 @@ double fibRetracePrice(double p1, double p2, double retracePercent)
 
     return priceAftRetrace;
 }
-
-void checkForPartials()
-{
-  
-}
 //to work on in future for security reasons to downsize and upsize apropriately
 bool BadStreak()
 {
