@@ -15,10 +15,19 @@ double minHeight = NormalizeDouble(fmin(trendCandles[1].low, lastDailyCandleLow)
 double fibPriceForBuys = fibRetracePrice(minHeight, lastDailyCandleHigh, 0.786);
 double lotSize;
 double spread;
-static bool checkAgain = true;
 
 
 //checking if highs follo lows and vice versa
+bool isTradingDay()
+{
+    MqlDateTime day;
+    TimeToStruct(TimeCurrent(), day);
+    if(day.day_of_week > 0 && day.day_of_week < 6)
+        return true;
+    else 
+        return false;
+}
+
 bool peaksInMatchingOrder(MqlRates &array[]) 
 {
     MqlRates h1candles[48];
@@ -130,10 +139,6 @@ void trade()
             trade.SellLimit(calculateLotSize(calculatePipDifference(fibPriceForSells, maxHeight)), fibPriceForSells, NULL, maxHeight, fibRetracePrice(maxHeight, lastDailyCandleLow, -0.27), ORDER_TIME_DAY, 0, NULL);
             checkAgain = false;
         }
-        else
-        {
-            SendNotification("Trade found on pair " + _Symbol + ". Spread(" + string(spread) + ") is too high or lotsize(" + string(lotSize) +") is to low at the moment");
-        }
     }
     else if(trendClassifier(trendCandles) % 2 != 0 && trendBreak("TO UPSIDE")) // downtrend
     {
@@ -143,10 +148,6 @@ void trade()
         {
             trade.BuyLimit(calculateLotSize(calculatePipDifference(fibPriceForBuys, minHeight)), fibPriceForBuys, NULL, minHeight, fibRetracePrice(minHeight, lastDailyCandleHigh, -0.27), ORDER_TIME_DAY, 0, NULL);
             checkAgain = false;
-        }
-        else
-        {
-            SendNotification("Trade found on pair " + _Symbol + ". Spread(" + string(spread) + ") is too high or lotsize(" + string(lotSize) +") is to low at the moment");
         }
     }
 }
