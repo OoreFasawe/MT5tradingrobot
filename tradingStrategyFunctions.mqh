@@ -156,6 +156,8 @@ void getOBs(string trendBreakType)
         }
     }
 
+
+    //find OBs and add them to OBList Array
     for(int i = leftBound; i <  rightBound; i++)
     {
         if(trendBreakType == "FOR BUYS")
@@ -178,6 +180,64 @@ void getOBs(string trendBreakType)
             }
         }
     }
+
+    //Remove oversized OBs from Array
+    for(int i = 0; i < OBCount; i ++)
+    {
+        if(trendBreakType == "FOR BUYS")
+        {
+            if(OBList[i].getHeight() >= calculatePipDifference(minHeight, fibPriceForBuys))
+            {
+                Alert(OBList[i].getHeight());
+                Alert(calculatePipDifference(minHeight, fibPriceForBuys));
+                ArrayRemove(OBList, i, 1);
+            }
+        }
+        else if(trendBreakType == "FOR SELLS")
+        {
+            if(OBList[i].getHeight() >= calculatePipDifference(maxHeight, fibPriceForSells))
+            {
+                Alert(OBList[i].getHeight());
+                Alert(calculatePipDifference(maxHeight, fibPriceForSells));
+                ArrayRemove(OBList, i, 1);
+            }
+        }
+    }
+
+    //Remove tested OBs from Array
+    int OBsToRemove[];  
+    int OBsToRemoveCount = 0;
+    for(int i = 0; i < OBCount - 1; i++)
+    {
+        for(int j = i + 1; j < OBCount; j ++)
+        {
+            if(trendBreakType == "FOR BUYS")
+            {
+                if(OBList[i].getMiddle() > OBList[j].getBottom())
+                    {
+                        OBsToRemoveCount += 1;
+                        ArrayResize(OBsToRemove, OBsToRemoveCount);
+                        OBsToRemove[OBsToRemoveCount - 1] = i;
+                    }
+            }
+            else if(trendBreakType == "FOR SELLS")
+            {
+                if(OBList[i].getMiddle() < OBList[j].getTop())
+                    {
+                        OBsToRemoveCount += 1;
+                        ArrayResize(OBsToRemove, OBsToRemoveCount);
+                        OBsToRemove[OBsToRemoveCount - 1] = i;
+                    }
+            }
+        }
+    }
+
+    for(int i = 0; i < OBsToRemoveCount; i ++)
+        ArrayRemove(OBList, i, 1);
+
+
+
+
 
     for(int i = 0; i < ObCount; i ++)
     {
