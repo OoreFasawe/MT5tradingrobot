@@ -11,6 +11,8 @@
 //*Important and Urgent
 //*Important but not urgent
 //- Set-up vps so EA can run without terminal needing to be on
+//- incorporate the functionality of orderblocks( might be hard to code at first but definitely possible)
+//- Possibly start a signal service
 //*Not important but urgent
 //*Not important nor urgent
 //- Different lotsizing for different trend strengths

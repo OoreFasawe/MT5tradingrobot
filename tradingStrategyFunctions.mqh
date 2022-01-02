@@ -3,6 +3,7 @@
 
 #include <riskManagementFunctions.mqh>
 #include <Trade\Trade.mqh>
+#include <..\Experts\OB.mqh>
 
 CTrade trade;
 MqlRates trendCandles[2];
