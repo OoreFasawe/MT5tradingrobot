@@ -188,18 +188,16 @@ void getOBs(string trendBreakType)
         {
             if(OBList[i].getHeight() >= calculatePipDifference(minHeight, fibPriceForBuys))
             {
-                Alert(OBList[i].getHeight());
-                Alert(calculatePipDifference(minHeight, fibPriceForBuys));
                 ArrayRemove(OBList, i, 1);
+                OBCount -= 1;
             }
         }
         else if(trendBreakType == "FOR SELLS")
         {
             if(OBList[i].getHeight() >= calculatePipDifference(maxHeight, fibPriceForSells))
             {
-                Alert(OBList[i].getHeight());
-                Alert(calculatePipDifference(maxHeight, fibPriceForSells));
                 ArrayRemove(OBList, i, 1);
+                OBCount -= 1;
             }
         }
     }
@@ -233,15 +231,17 @@ void getOBs(string trendBreakType)
     }
 
     for(int i = 0; i < OBsToRemoveCount; i ++)
-        ArrayRemove(OBList, i, 1);
-
-
-
-
-
-    for(int i = 0; i < ObCount; i ++)
     {
-        OBList[i].draw(i);
+        ArrayRemove(OBList, OBsToRemove[i], 1);
+        OBCount -= 1;
+    }
+
+    if(OBCount)
+    {
+        for(int i = 0; i < OBCount; i++)
+        {
+            OBList[i].draw(i);
+        }
     }
 }
 
