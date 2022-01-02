@@ -81,9 +81,10 @@ datetime OB::getTime()
 
 void OB::draw(int i)
   {
+   string name = "OB" + string(i);
    ObjectCreate(
       NULL,
-      "OB" + string(i),
+      name,
       OBJ_RECTANGLE,
       0,
       time,
@@ -91,5 +92,11 @@ void OB::draw(int i)
       TimeCurrent(),
       bottom
    );
+   ObjectSetInteger(NULL,name,OBJPROP_COLOR, clrLightSkyBlue);
+   ObjectSetInteger(NULL,name,OBJPROP_FILL, true);
+   ObjectSetInteger(NULL,name,OBJPROP_SELECTABLE,true);
+   ObjectSetInteger(NULL,name,OBJPROP_SELECTED,true);
+   ObjectSetInteger(NULL,name,OBJPROP_HIDDEN,false);
+  }
    
   }

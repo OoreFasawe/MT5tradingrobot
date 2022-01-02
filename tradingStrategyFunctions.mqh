@@ -16,6 +16,7 @@ double minHeight = NormalizeDouble(fmin(trendCandles[1].low, lastDailyCandleLow)
 double fibPriceForBuys = fibRetracePrice(minHeight, lastDailyCandleHigh, 0.786);
 double lotSize;
 double spread;
+OB OBList[];
 
 
 //checking if highs follo lows and vice versa
@@ -127,6 +128,75 @@ bool properBreak(string trendBreakType)
         return false;
 }
 
+void getOBs(string trendBreakType)
+{
+    MqlRates OBCandles[];
+    int leftBound = 0;
+    int rightBound = 0;
+    int OBCount = 0;
+
+    //candles from now till opening of last day
+    int candlesFromMaxOrMin = CopyRates(NULL, PERIOD_M15, iTime(NULL, PERIOD_H1, 0), iTime(NULL, PERIOD_D1, 3), OBCandles);
+
+    for( int i = 1; i < candlesFromMaxOrMin; i ++)
+    {
+        if(trendBreakType == "FOR BUYS")
+        {
+            if(OBCandles[i].low == minHeight)
+                leftBound = i;
+            if(OBCandles[i].high == lastDailyCandleHigh)
+                rightBound = i;
+        }
+        else if(trendBreakType == "FOR SELLS")
+        {
+            if(OBCandles[i].high == maxHeight)
+                leftBound = i;
+            if(OBCandles[i].low == lastDailyCandleLow)
+                rightBound = i;
+        }
+    }
+
+    for(int i = leftBound; i <  rightBound; i++)
+    {
+        if(trendBreakType == "FOR BUYS")
+        {
+            if(OBCandles[i - 1].low > OBCandles[i].low && OBCandles[i].low < OBCandles[i + 1].low && OBCandles[i].low < fibPriceForBuys)
+            {
+                OBCount += 1;
+                ArrayResize(OBList, OBCount);
+                OBList[OBCount - 1] = new OB(OBCandles[i].high, OBCandles[i].low, OBCandles[i].time);
+            }
+        }
+        else if(trendBreakType == "FOR SELLS")
+        {
+            if(OBCandles[i - 1].high < OBCandles[i].high && OBCandles[i].high > OBCandles[i + 1].high && OBCandles[i].high > fibPriceForSells) 
+            {
+                OBCount += 1;
+                ArrayResize(OBList, OBCount);
+                OBList[OBCount - 1] = new OB(OBCandles[i].high, OBCandles[i].low, OBCandles[i].time);
+                
+            }
+        }
+    }
+
+    for(int i = 0; i < ObCount; i ++)
+    {
+        OBList[i].draw(i);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 void trade()
 {
     if(trendClassifier(trendCandles) == 0) // consolidation
@@ -192,6 +262,20 @@ void checkForPartials()
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
