@@ -129,121 +129,133 @@ bool properBreak(string trendBreakType)
 }
 
 void getOBs(string trendBreakType)
-{
-    MqlRates OBCandles[];
-    int leftBound = 0;
-    int rightBound = 0;
-    int OBCount = 0;
+  {
+   MqlRates OBCandles[];
+   int leftBound = 0;
+   int rightBound = 0;
+   int OBCount = 0;
 
-    //candles from now till opening of last day
-    int candlesFromMaxOrMin = CopyRates(NULL, PERIOD_M15, iTime(NULL, PERIOD_H1, 0), iTime(NULL, PERIOD_D1, 3), OBCandles);
+//candles from now till opening of last day in array
+   int candlesFromMaxOrMin = CopyRates(NULL, PERIOD_M15, iTime(NULL, PERIOD_H1, 0), iTime(NULL, PERIOD_D1, 3), OBCandles);
 
-    for( int i = 1; i < candlesFromMaxOrMin; i ++)
-    {
-        if(trendBreakType == "FOR BUYS")
+   for(int i = 1; i < candlesFromMaxOrMin; i ++)
+     {
+      if(trendBreakType == "FOR BUYS")
         {
-            if(OBCandles[i].low == minHeight)
-                leftBound = i;
-            if(OBCandles[i].high == lastDailyCandleHigh)
-                rightBound = i;
+         if(OBCandles[i].low == minHeight)
+            leftBound = i;
+         if(OBCandles[i].high == lastDailyCandleHigh)
+            rightBound = i;
         }
-        else if(trendBreakType == "FOR SELLS")
-        {
+      else
+         if(trendBreakType == "FOR SELLS")
+           {
             if(OBCandles[i].high == maxHeight)
-                leftBound = i;
+               leftBound = i;
             if(OBCandles[i].low == lastDailyCandleLow)
-                rightBound = i;
-        }
-    }
+               rightBound = i;
+           }
+     }
 
+   for(int i = leftBound; i <  rightBound; i++)
+     {
+      if(trendBreakType == "FOR BUYS")
+        {
+         if(OBCandles[i - 1].low > OBCandles[i].low && OBCandles[i].low < OBCandles[i + 1].low && OBCandles[i].low < fibPriceForBuys)
+           {
 
-    //find OBs and add them to OBList Array
-    for(int i = leftBound; i <  rightBound; i++)
-    {
-        if(trendBreakType == "FOR BUYS")
-        {
-            if(OBCandles[i - 1].low > OBCandles[i].low && OBCandles[i].low < OBCandles[i + 1].low && OBCandles[i].low < fibPriceForBuys)
-            {
-                OBCount += 1;
-                ArrayResize(OBList, OBCount);
-                OBList[OBCount - 1] = new OB(OBCandles[i].high, OBCandles[i].low, OBCandles[i].time);
-            }
+            OBCount += 1;
+            ArrayResize(OBList, OBCount);
+            OBList[OBCount -1] = new OB(OBCandles[i].high, OBCandles[i].low, OBCandles[i].time);
+           }
         }
-        else if(trendBreakType == "FOR SELLS")
-        {
-            if(OBCandles[i - 1].high < OBCandles[i].high && OBCandles[i].high > OBCandles[i + 1].high && OBCandles[i].high > fibPriceForSells) 
-            {
-                OBCount += 1;
-                ArrayResize(OBList, OBCount);
-                OBList[OBCount - 1] = new OB(OBCandles[i].high, OBCandles[i].low, OBCandles[i].time);
-                
-            }
-        }
-    }
+      else
+         if(trendBreakType == "FOR SELLS")
+           {
+            if(OBCandles[i - 1].high < OBCandles[i].high && OBCandles[i].high > OBCandles[i + 1].high && OBCandles[i].high > fibPriceForSells)
+              {
+               OBCount += 1;
+               ArrayResize(OBList, OBCount);
+               OBList[OBCount - 1] = new OB(OBCandles[i].high, OBCandles[i].low, OBCandles[i].time);
+              }
+           }
+     }
 
-    //Remove oversized OBs from Array
-    for(int i = 0; i < OBCount; i ++)
-    {
-        if(trendBreakType == "FOR BUYS")
+//Move oversized OBs out of the way
+   for(int i = 0; i < OBCount; i ++)
+     {
+      if(trendBreakType == "FOR BUYS")
         {
-            if(OBList[i].getHeight() >= calculatePipDifference(minHeight, fibPriceForBuys))
-            {
-                ArrayRemove(OBList, i, 1);
-                OBCount -= 1;
-            }
+         if(OBList[i].getHeight() >= calculatePipDifference(minHeight, fibPriceForBuys))
+           {
+            OBList[i].setTop(lastDailyCandleHigh);
+            OBList[i].setBottom(lastDailyCandleHigh);
+            OBList[i].setMiddle(lastDailyCandleHigh);
+           }
         }
-        else if(trendBreakType == "FOR SELLS")
-        {
+      else
+         if(trendBreakType == "FOR SELLS")
+           {
             if(OBList[i].getHeight() >= calculatePipDifference(maxHeight, fibPriceForSells))
-            {
-                ArrayRemove(OBList, i, 1);
-                OBCount -= 1;
-            }
-        }
-    }
+              {
+               OBList[i].setTop(lastDailyCandleLow);
+               OBList[i].setBottom(lastDailyCandleLow);
+               OBList[i].setMiddle(lastDailyCandleLow);
+              }
+           }
+     }
 
-    //Remove tested OBs from Array
-    int OBsToRemove[];  
-    int OBsToRemoveCount = 0;
-    for(int i = 0; i < OBCount - 1; i++)
-    {
-        for(int j = i + 1; j < OBCount; j ++)
+//Move tested OBs out of the way
+   for(int i = 0; i < OBCount - 1; i++)
+     {
+      for(int j = i + 1; j < OBCount; j ++)
         {
-            if(trendBreakType == "FOR BUYS")
-            {
-                if(OBList[i].getMiddle() > OBList[j].getBottom())
-                    {
-                        OBsToRemoveCount += 1;
-                        ArrayResize(OBsToRemove, OBsToRemoveCount);
-                        OBsToRemove[OBsToRemoveCount - 1] = i;
-                    }
-            }
-            else if(trendBreakType == "FOR SELLS")
-            {
-                if(OBList[i].getMiddle() < OBList[j].getTop())
-                    {
-                        OBsToRemoveCount += 1;
-                        ArrayResize(OBsToRemove, OBsToRemoveCount);
-                        OBsToRemove[OBsToRemoveCount - 1] = i;
-                    }
-            }
+         if(trendBreakType == "FOR BUYS")
+           {
+            if(OBList[i].getMiddle() > OBList[j].getBottom())
+              {
+               OBList[i].setTop(lastDailyCandleHigh);
+               OBList[i].setBottom(lastDailyCandleHigh);
+               OBList[i].setMiddle(lastDailyCandleHigh);
+              }
+           }
+         else
+            if(trendBreakType == "FOR SELLS")
+              {
+               if(OBList[i].getMiddle() < OBList[j].getTop())
+                 {
+                  OBList[i].setTop(lastDailyCandleLow);
+                  OBList[i].setBottom(lastDailyCandleLow);
+                  OBList[i].setMiddle(lastDailyCandleLow);
+                 }
+              }
         }
-    }
+     }
 
-    for(int i = 0; i < OBsToRemoveCount; i ++)
-    {
-        ArrayRemove(OBList, OBsToRemove[i], 1);
-        OBCount -= 1;
-    }
-
-    if(OBCount)
-    {
-        for(int i = 0; i < OBCount; i++)
+//Delete all Obs that are out of the way
+   int OBsRemoved = 0;
+   double value = trendBreakType == "FOR BUYS" ? lastDailyCandleHigh : lastDailyCandleLow;
+   for(int i= 0; i < OBCount; i++)
+     {
+      for(int j = 0; j < OBCount - OBsRemoved; j++)
         {
-            OBList[i].draw(i);
+         if(OBList[j].getMiddle() == value)
+           {
+            ArrayRemove(OBList, j, 1);
+            OBsRemoved += 1;
+            break;
+           }
         }
-    }
-}
+     }
+
+   if(OBCount)
+     {
+      for(int i = 0; i < OBCount - OBsRemoved; i++)
+        {
+         OBList[i].draw(i);
+        }
+     }
+  }
 
 
 

@@ -22,6 +22,9 @@ public:
    double            getBottom();
    double            getHeight();
    datetime          getTime();
+   void              setTop(double t);
+   void              setMiddle(double m);
+   void              setBottom(double b);
    void              draw(int i);
 
   };
@@ -78,6 +81,22 @@ datetime OB::getTime()
    return time;
   }
 
+void OB::setTop(double t)
+  {
+   top = t;
+  }
+
+
+void OB::setMiddle(double m)
+  {
+   middle = m;
+  }
+
+
+void OB::setBottom(double b)
+  {
+   bottom = b;
+  }
 
 void OB::draw(int i)
   {
