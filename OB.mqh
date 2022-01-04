@@ -16,6 +16,7 @@ private:
 public:
   OB();
   OB(double t, double b, datetime blockTime);
+  OB(const OB& that)
   ~OB();
 
   double getTop();
@@ -27,6 +28,7 @@ public:
   void setMiddle(double m);
   void setBottom(double b);
   void draw(int i);
+  void resize(double newSize)
 };
 
 OB::OB()
@@ -119,4 +121,11 @@ void OB::draw(int i)
   ObjectSetInteger(NULL, name, OBJPROP_SELECTED, true);
   ObjectSetInteger(NULL, name, OBJPROP_HIDDEN, false);
 }
+
+void OB::resize(double newSize)
+{
+  top += NormalizeDouble(newSize / (2 * pow(10, _Digits)), _Digits);
+  bottom -= NormalizeDouble(newSize / (2 * pow(10, _Digits)), _Digits);
+  middle = middle = (top + bottom) / 2;
+  height = newSize;
 }
