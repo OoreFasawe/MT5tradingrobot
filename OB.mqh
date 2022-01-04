@@ -47,6 +47,16 @@ OB::OB(double t, double b, datetime blockTime)
   time = blockTime;
 }
 
+OB::OB(const OB& that) 
+{ 
+  top = that.top;
+  middle = that.middle;
+  bottom = that.bottom;
+  height = that.height;
+  time = that.time;
+}
+
+
 OB::~OB()
 {
 }

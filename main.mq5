@@ -9,20 +9,22 @@ static datetime timeday = 0;
 static bool checkAgain = true;
 
 void OnTick()
-{
-    if (timeday != iTime(NULL, PERIOD_D1, 0) + 21600)
-    {
-        checkAgain = true;
-        timeday = iTime(NULL, PERIOD_D1, 0) + 21600;
-    }
+  {
 
-    if (isTradingDay() && checkAgain)
-    {
-        if (OrdersTotal() + PositionsTotal() < 10)
+   if(timeday!=iTime(NULL,PERIOD_D1,0) && timeOfDay().hour == 18)
+     {
+      checkAgain = true;
+      timeday=iTime(NULL,PERIOD_D1,0);
+     }
+
+   if(isTradingDay() && checkAgain)
+     {
+      if(OrdersTotal() + PositionsTotal() < 10)
         {
-            trade();
+         trade();
         }
-    }
+     }
 
-    checkForPartials();
-}
+   checkForPartials();
+  }
+
