@@ -17,8 +17,17 @@ double fibPriceForBuys = fibRetracePrice(minHeight, lastDailyCandleHigh, 0.786);
 double lotSize;
 double spread;
 OB OBList[];
+double orderDetails[2];
 
 // checking if highs follo lows and vice versa
+MqlDateTime timeOfDay()
+{
+    MqlDateTime time;
+    TimeToStruct(TimeLocal(), time);
+
+    return time;
+}
+
 bool isTradingDay()
 {
     MqlDateTime day;
@@ -129,14 +138,15 @@ bool properBreak(string trendBreakType)
         return false;
 }
 
-void getOBs(string trendBreakType)
+void getOBs(double &tradePoints[], string trendBreakType)
 {
+    OB OBList[];
     MqlRates OBCandles[];
     int leftBound = 0;
     int rightBound = 0;
     int OBCount = 0;
 
-    // candles from now till opening of last day in array
+    // candles from now till opening of last day
     int candlesFromMaxOrMin = CopyRates(NULL, PERIOD_M15, iTime(NULL, PERIOD_H1, 0), iTime(NULL, PERIOD_D1, 3), OBCandles);
 
     for (int i = 1; i < candlesFromMaxOrMin; i++)
@@ -166,7 +176,7 @@ void getOBs(string trendBreakType)
 
                 OBCount += 1;
                 ArrayResize(OBList, OBCount);
-                OBList[OBCount - 1] = new OB(OBCandles[i].high, OBCandles[i].low, OBCandles[i].time);
+                OBList[OBCount - 1] = OB(OBCandles[i].high, OBCandles[i].low, OBCandles[i].time);
             }
         }
         else if (trendBreakType == "FOR SELLS")
@@ -175,7 +185,7 @@ void getOBs(string trendBreakType)
             {
                 OBCount += 1;
                 ArrayResize(OBList, OBCount);
-                OBList[OBCount - 1] = new OB(OBCandles[i].high, OBCandles[i].low, OBCandles[i].time);
+                OBList[OBCount - 1] = OB(OBCandles[i].high, OBCandles[i].low, OBCandles[i].time);
             }
         }
     }
@@ -245,14 +255,47 @@ void getOBs(string trendBreakType)
         }
     }
 
-    // draw the remaining OBs on the chart
-    if (OBCount)
+    int closest = 0;
+    if (OBCount - OBsRemoved > 0)
     {
+
         for (int i = 0; i < OBCount - OBsRemoved; i++)
         {
-            OBList[i].draw(i);
+            if (trendBreakType == "FOR BUYS")
+            {
+                if (calculatePipDifference(OBList[i].getBottom(), fibPriceForBuys) < calculatePipDifference(OBList[closest].getBottom(), fibPriceForBuys))
+                    closest = i;
+            }
+            else
+            {
+                if (calculatePipDifference(OBList[i].getTop(), fibPriceForSells) < calculatePipDifference(OBList[closest].getTop(), fibPriceForSells))
+                    closest = i;
+            }
         }
     }
+    else
+    {
+        closest = -1;
+    }
+
+    if (OBCount - OBsRemoved > 0)
+    {
+        double minOBHeight = trendBreakType == "FOR BUYS" ? calculatePipDifference(fibRetracePrice(minHeight, lastDailyCandleHigh, 0.89), fibPriceForBuys) : calculatePipDifference(fibRetracePrice(maxHeight, lastDailyCandleLow, 0.89), fibPriceForSells)
+        for (int i = 0; i < OBCount - OBsRemoved; i++)
+        {
+            if(OBList[i].getHeight() < minOBHeight)
+                OBList[i].resize(minOBHeight - OBList[i].getHeight());
+            OBList[i].draw(i);
+        }
+        tradePoints[0] = OBList[closest].getTop();
+        tradePoints[1] = OBList[closest].getBottom();
+    }
+
+
+
+
+    ArrayFree(OBList);
+    Alert(closest);
 }
 
 void trade()
@@ -320,17 +363,6 @@ void checkForPartials()
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 // Extra functions that may be helpful for optimization in the future
 // better implementation of peaksInMatchingOrder, more reusable.
